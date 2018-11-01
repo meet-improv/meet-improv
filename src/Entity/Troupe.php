@@ -10,14 +10,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @desc The Group Entity represents a Troup, a Group, an Association, a Ligue of improvisation.
+ * The Troupe Entity represents a Troup, a Group, an Association, a Ligue of improvisation.
+ * 
+ * 
  * @example AIA, LICA, Les Fruits des Fondus... 
  * 
  * 
- * @ORM\Entity(repositoryClass="App\Repository\GroupRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\TroupeRepository")
  * 
  */
-class Group
+class Troupe
 {
     /**
      * @ORM\Id()
@@ -30,10 +32,6 @@ class Group
      */
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
-    private $shortName;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -44,6 +42,11 @@ class Group
      * @ORM\Column(type="string", length=100)
      */
     private $location;
+
+    /**
+     * @ORM\Column(type="string", length=20)   
+     */
+    private $shortName;    //@todo make unique and manage duplicate???
     
     public function  __construct(){
         $this->id = Uuid::uuid4();
@@ -66,17 +69,9 @@ class Group
         return $this;
     }
 
-    public function getShortName(): ?string
-    {
-        return $this->shortName;
-    }
+ 
 
-    public function setShortName(string $shortName): self
-    {
-        $this->shortName = $shortName;
-
-        return $this;
-    }
+  
 
     public function getDescription(): ?string
     {
@@ -98,6 +93,18 @@ class Group
     public function setLocation(string $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function getShortName(): ?string
+    {
+        return $this->shortName;
+    }
+
+    public function setShortName(string $shortName): self
+    {
+        $this->shortName = $shortName;
 
         return $this;
     }

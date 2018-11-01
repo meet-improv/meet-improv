@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent()}} Troupe{% endblock %}
+
+{% block body %}
+
+
+<div class=" ">
+    <h1>Troupe</h1>
+
+
+{{ troupe.name }} ({{ troupe.shortName }}) <br>
+{{ troupe.location }}<br>
+{{ troupe.description }}
+
+</div>
+{% endblock %}
