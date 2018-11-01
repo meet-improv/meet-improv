@@ -16,3 +16,8 @@
 ###< symfony/web-server-bundle ###
 
 .DS_Store
+
+###. Eclispe project
+.buildpath
+.project
+.settings/
