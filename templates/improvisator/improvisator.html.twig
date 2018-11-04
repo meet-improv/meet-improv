@@ -16,7 +16,7 @@
 
 {% for membership in  improvisator.memberships %}
 
-{{ membership.role }}: <a href="{{ path("troupe_identifier", {identifier: membership.improvGroup.identifier}) }}">{{ membership.improvGroup.name }}</a><br>
+{{ membership.role }}: {{ membership.improvGroup.type }} <a href="{{ path("troupe_identifier", {identifier: membership.improvGroup.identifier}) }}">{{ membership.improvGroup.name }}</a><br>
 
 {% endfor %}
 

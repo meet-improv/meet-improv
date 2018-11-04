@@ -30,6 +30,14 @@ abstract class Contributor
 {
     use TimestampableEntity;
     
+    
+    const TYPE_TROUPE = "troupe";
+    const TYPE_TEAM  = "team";
+    const TYPE_IMPROVISATOR = "improvisator";
+
+    abstract public function getType();
+    
+    
     /**
      * @ORM\Id()
      * @ORM\Column(type="uuid_binary")

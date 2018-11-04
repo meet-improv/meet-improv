@@ -21,7 +21,9 @@ use Ramsey\Uuid\Uuid;
  */
 class Team  extends ImprovGroup
 {
-    
+    public function getType() {
+        return parent::TYPE_TEAM;
+    }
     
   
 }

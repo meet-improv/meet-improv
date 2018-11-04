@@ -30,6 +30,10 @@ class Improvisator extends Contributor
         parent::__construct();
         $this->memberships = new ArrayCollection();
     }
+    
+    public function getType() {
+        return parent::TYPE_IMPROVISATOR;
+    }
 
     /**
      * @return Collection|Membership[]
@@ -61,4 +65,7 @@ class Improvisator extends Contributor
 
         return $this;
     }
+    
+
+    
 }
