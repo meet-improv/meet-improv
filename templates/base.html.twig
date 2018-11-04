@@ -24,7 +24,8 @@
       </a>
       
       <a class="nav-item nav-link{{ app.request.get('_route') == 'home' ? ' active' }}" href="{{ path('troupe') }}">Home</a>
-      <a class="nav-item nav-link{{ app.request.get('_route') == 'troupe' ? ' active' }}" href="{{ path('troupe') }}"><i class="fas fa-tasks"></i> Group list</a>
+      <a class="nav-item nav-link{{ app.request.get('_route') == 'troupe' ? ' active' }}" href="{{ path('troupe') }}"><i class="fas fa-tasks"></i> Troupe list</a>
+      <a class="nav-item nav-link{{ app.request.get('_route') == 'improvisator' ? ' active' }}" href="{{ path('improvisator') }}"><i class="fas fa-users"></i> Improvisator list</a>
     </nav>
     
     

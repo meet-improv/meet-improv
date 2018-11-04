@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent()}} Improvisators{% endblock %}
+
+{% block body %}
+
+
+<div class=" ">
+    <h1>Improvisator list</h1>
+
+{% for improvisator in improvisators %}
+<a href="{{ path("improvisator_identifier", {identifier: improvisator.identifier}) }}">{{ improvisator.name }} ({{ improvisator.shortName }})</a> <br>
+{% endfor %}
+
+</div>
+{% endblock %}

@@ -5,6 +5,8 @@ namespace App\DataFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\Troupe;
+use App\Entity\Improvisator;
+use App\Entity\Membership;
 
 class TroupeFixtures extends BaseFixture
 {
@@ -33,6 +35,25 @@ class TroupeFixtures extends BaseFixture
         ->setLocation("Nice, FR");
         
         $manager->persist($group2);
+        
+        
+        $improvisator1= new Improvisator();
+        $improvisator1->setName("Priscilla Beyrand")
+        ->setShortName("pripribey")
+        ->setDescription("blabla");
+        
+        $manager->persist($improvisator1);
+        
+        $membership = new Membership();
+        $date = new \DateTime("01-03-2014");
+        $membership->setImprovGroup($group)
+        ->setImprovisator($improvisator1)
+        ->setRole("Présidente")
+        ->setStart($date)
+        ->setIsHidden(false);
+      
+        
+        $manager->persist($membership);
 
         $manager->flush();
     }

@@ -8,25 +8,28 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * The Troupe Entity represents a Troup, a Group, an Association, a Ligue of improvisation.
- * 
- * 
- * @example AIA, LICA, Les Fruits des Fondus... 
- * 
- * 
- * @ORM\Entity(repositoryClass="App\Repository\TroupeRepository")
- * 
+ * The Contributor abstract class represents any form of event contributor.
+ * It can be a Troup, a Team or an Improvisator.
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="contributor", indexes={@ORM\Index(name="type_idx", columns={"type"})})
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string", length=3)
+ * @ORM\DiscriminatorMap({
+ *     "TRO"="Troupe",
+ *     "TEA"="Team",
+ *     "IMP"="Improvisator",
+ *     "Grou" = "ImprovGroup"
+ * })
  */
-class Troupe extends ImprovGroup
+abstract class Contributor
 {
+    use TimestampableEntity;
     
-}
-
-
-
-class OLD {
     /**
      * @ORM\Id()
      * @ORM\Column(type="uuid_binary")
@@ -44,15 +47,17 @@ class OLD {
      */
     private $description;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $location;
 
     /**
      * @ORM\Column(type="string", length=20)   
      */
-    private $shortName;    //@todo make unique and manage duplicate???
+    private $shortName;
+
+    /**
+     * @ORM\Column(type="string", length=100, unique=true)
+     * @Gedmo\Slug(fields={"shortName"})
+     */
+    private $identifier;    
     
     public function  __construct(){
         $this->id = Uuid::uuid4();
@@ -74,9 +79,6 @@ class OLD {
 
         return $this;
     }
-
- 
-
   
 
     public function getDescription(): ?string
@@ -91,7 +93,7 @@ class OLD {
         return $this;
     }
 
-
+    
 
     public function getShortName(): ?string
     {
@@ -104,4 +106,17 @@ class OLD {
 
         return $this;
     }
+
+    public function getIdentifier(): ?string
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(string $identifier): self
+    {
+        $this->identifier = $identifier;
+
+        return $this;
+    }
 }
+
