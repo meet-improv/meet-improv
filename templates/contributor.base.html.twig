@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent()}} {{ contributor.shortName }}{% endblock %}
+{% block stylesheets %}
+        {{ parent()}}
+{% endblock %}
+{% block body %}
+
+<div class="container main-container">
+  <div class="row" >
+    <div class="col-12 contributor-banner"  style="background-image: url('https://aia-le-site.com/wp-content/uploads/2015/01/diapo3.jpg');">
+    		<div class="contributor-profile" style="background-image: url('http://aia-le-site.com/wp-content/uploads/2015/02/MHLebee_logo_header.png');"></div>
+    		<div class="contributor-name">{{ contributor.name }}</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-3 contributor-details">
+        {% block contributor_details %}
+        {% if contributor.type == "troupe" %}
+        <i class="fas fa-theater-masks" data-toggle='tooltip' title='{{ contributor.type }}'></i>
+        {% elseif contributor.type == "improvisator" %}
+        <i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ contributor.type }}'></i>
+        {% elseif contributor.type == "team" %}
+        <i class="fas fa-users"  data-toggle='tooltip' title='{{ contributor.type }}'></i>
+        {% else %}
+        {% endif %}
+         <i>{{ contributor.shortName }}</i><br>
+         {{ contributor.location }}
+         <br>
+         <br>
+        {{ contributor.description }}<br>
+        {% endblock %}
+    </div>
+    <div class="col contributor-content">
+    		
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    
+    {% if contributor.isImprovGroup %}
+      <li class="nav-item">
+        <a class="nav-link active" id="members-tab" data-toggle="tab" href="#members" role="tab" aria-controls="members" aria-selected="true">Members <span class="badge badge-secondary">{{ contributor.memberships|length }}</span></a>
+      </li>
+    {% else %}
+      <li class="nav-item">
+        <a class="nav-link active" id="groups-tab" data-toggle="tab" href="#groups" role="tab" aria-controls="groups" aria-selected="true">Groups <span class="badge badge-secondary">{{ contributor.memberships|length }}</span></a>
+      </li>
+    {% endif %}
+      {% if contributor.teams is defined %}
+      <li class="nav-item">
+        <a class="nav-link" id="teams-tab" data-toggle="tab" href="#teams" role="tab" aria-controls="teams" aria-selected="false">Teams <span class="badge badge-secondary">{{ contributor.teams|length }}</span></a>
+      </li>
+       {% endif %}
+      <li class="nav-item">
+        <a class="nav-link" id="events-tab" data-toggle="tab" href="#events" role="tab" aria-controls="events" aria-selected="false">Events <span class="badge badge-secondary">4</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="public-open-dates-tab" data-toggle="tab" href="#public-open-dates" role="tab" aria-controls="public-open-dates" aria-selected="false">Public open dates <span class="badge badge-secondary">0</span></a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+    {% if contributor.isImprovGroup %}
+      <div class="tab-pane fade show active" id="members" role="tabpanel" aria-labelledby="members-tab">
+          {% for membership in  contributor.memberships %}
+
+     		<i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ membership.improvisator.type }}'></i> <a href="{{ path("improvisator_identifier", {identifier: membership.improvisator.identifier}) }}">{{ membership.improvisator.name }}</a>, {{ membership.role }}<br>
+    
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="tab-pane fade show active" id="groups" role="tabpanel" aria-labelledby="groups-tab">
+      {% for membership in  contributor.memberships %}
+{{ membership.role }} of 
+         {% if membership.improvGroup.type == "troupe" %}
+        	<i class="fas fa-theater-masks" data-toggle='tooltip' title='{{ membership.improvGroup.type }}'></i>
+        {% elseif membership.improvGroup.type == "team" %}
+        	<i class="fas fa-users"  data-toggle='tooltip' title='{{ membership.improvGroup.type }}'></i>
+        {% else %}
+        {% endif %}
+        <a href="{{ path("troupe_identifier", {identifier: membership.improvGroup.identifier}) }}">{{ membership.improvGroup.name }}</a><br>
+    
+    {% endfor %}
+      </div>
+    {% endif %}
+     {% if contributor.teams is defined %}
+      <div class="tab-pane fade" id="teams" role="tabpanel" aria-labelledby="teams-tab">TEAMS</div>
+      {% endif %}
+      <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="events-tab">EVENTS</div>
+      <div class="tab-pane fade" id="public-open-dates" role="tabpanel" aria-labelledby="public-open-dates-tab">PUBLIC OPEN DATES</div>
+    </div>
+    		
+    		
+      {% block contributor_content %}
+{% endblock %}
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+        
+        {{ parent()}}
+        
+        <script type="text/javascript">
+        $(document).ready(function() {
+        	$('[data-toggle="tooltip"]').tooltip({'placement':'auto'});
+        });
+        </script>
+{% endblock %}
+    
+
+    

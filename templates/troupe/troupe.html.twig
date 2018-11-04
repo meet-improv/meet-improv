@@ -1,25 +1,16 @@
-{% extends 'base.html.twig' %}
+{% extends 'contributor.base.html.twig' %}
 
-{% block title %}{{ parent()}} Troupe{% endblock %}
+{% set contributor = troupe %}
+{% block contributor_details %}
 
-{% block body %}
-
-
-<div class=" ">
-    <h1>Troupe</h1>
+{{ parent() }}
 
 
-{{ troupe.name }} ({{ troupe.shortName }}) <br>
-{{ troupe.location }}<br>
-{{ troupe.description }}
+{% endblock %}
 
-<h2>Members</h2>
+{% block contributor_content %}
 
-{% for membership in  troupe.memberships %}
 
-<a href="{{ path("improvisator_identifier", {identifier: membership.improvisator.identifier}) }}">{{ membership.improvisator.name }}</a>, {{ membership.role }}<br>
 
-{% endfor %}
 
-</div>
 {% endblock %}

@@ -36,6 +36,7 @@ abstract class Contributor
     const TYPE_IMPROVISATOR = "improvisator";
 
     abstract public function getType();
+    abstract public function isImprovGroup();
     
     
     /**
@@ -53,7 +54,7 @@ abstract class Contributor
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $description;
+    private $description='';
 
 
     /**
@@ -65,7 +66,24 @@ abstract class Contributor
      * @ORM\Column(type="string", length=100, unique=true)
      * @Gedmo\Slug(fields={"shortName"})
      */
-    private $identifier;    
+    private $identifier; 
+    
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $location='';
+    
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+    
+    public function setLocation(string $location): self
+    {
+        $this->location = $location;
+        
+        return $this;
+    }
     
     public function  __construct(){
         $this->id = Uuid::uuid4();

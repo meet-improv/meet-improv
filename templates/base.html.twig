@@ -13,7 +13,9 @@
 	<!-- FontAwesomeIcons CSS -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 	
-        
+    	
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/base.css') }}">
+	
         
         {% endblock %}
     </head>
@@ -24,8 +26,8 @@
       </a>
       
       <a class="nav-item nav-link{{ app.request.get('_route') == 'home' ? ' active' }}" href="{{ path('troupe') }}">Home</a>
-      <a class="nav-item nav-link{{ app.request.get('_route') == 'troupe' ? ' active' }}" href="{{ path('troupe') }}"><i class="fas fa-tasks"></i> Troupe list</a>
-      <a class="nav-item nav-link{{ app.request.get('_route') == 'improvisator' ? ' active' }}" href="{{ path('improvisator') }}"><i class="fas fa-users"></i> Improvisator list</a>
+      <a class="nav-item nav-link{{ app.request.get('_route') == 'troupe' ? ' active' }}" href="{{ path('troupe') }}"><i class="fas fa-theater-masks"></i> Troupe list</a>
+      <a class="nav-item nav-link{{ app.request.get('_route') == 'improvisator' ? ' active' }}" href="{{ path('improvisator') }}"><i class="fas fa-user-circle"></i> Improvisator list</a>
     </nav>
     
     

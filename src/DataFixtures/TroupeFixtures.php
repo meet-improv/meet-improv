@@ -15,7 +15,7 @@ class TroupeFixtures extends BaseFixture
         $group = new Troupe();
         $group->setName("Association d'Improvisation Antiboise")
         ->setShortName("AIA")
-        ->setDescription("AIA est basée à Antibes Yeah")
+        ->setDescription("L’AIA a été créée en février 2004 par une quinzaine de comédiens issus de diverses compagnies théâtrales.")
         ->setLocation("Antibes, FR");
         
         $manager->persist($group);
@@ -39,8 +39,8 @@ class TroupeFixtures extends BaseFixture
         
         $improvisator1= new Improvisator();
         $improvisator1->setName("Priscilla Beyrand")
-        ->setShortName("pripribey")
-        ->setDescription("blabla");
+        ->setShortName("Priscilla")
+        ->setDescription("Priscilla Beyrand une comédienne fantaisiste professionelle. ");
         
         $manager->persist($improvisator1);
         

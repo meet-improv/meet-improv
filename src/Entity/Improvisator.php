@@ -35,6 +35,10 @@ class Improvisator extends Contributor
         return parent::TYPE_IMPROVISATOR;
     }
 
+    public function  isImprovGroup(){
+        return false;
+    }
+    
     /**
      * @return Collection|Membership[]
      */
