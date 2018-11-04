@@ -7,6 +7,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\Troupe;
 use App\Entity\Improvisator;
 use App\Entity\Membership;
+use App\Entity\User;
 
 class TroupeFixtures extends BaseFixture
 {
@@ -51,9 +52,16 @@ class TroupeFixtures extends BaseFixture
         ->setRole("Présidente")
         ->setStart($date)
         ->setIsHidden(false);
-      
+        
         
         $manager->persist($membership);
+      
+        $user = new User();
+        $user->setUsername("yannloup")
+        ->setPassword("1234");
+        
+        $manager->persist($user);
+        
 
         $manager->flush();
     }

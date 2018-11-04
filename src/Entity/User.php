@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -12,8 +13,7 @@ class User implements UserInterface
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="uuid_binary")
      */
     private $id;
 
@@ -21,13 +21,28 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $username;
+    
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private $password;
 
     /**
      * @ORM\Column(type="json")
      */
     private $roles = [];
 
-    public function getId(): ?int
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Improvisator", inversedBy="user", cascade={"persist", "remove"})
+     */
+    private $improvisator;
+    
+    public function  __construct(){
+        $this->id = Uuid::uuid4();
+    }
+
+    public function getId()
     {
         return $this->id;
     }
@@ -71,11 +86,17 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getPassword()
+    public function getPassword(): string
     {
-        // not needed for apps that do not check user passwords
+        return (string) $this->password;
     }
 
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
     /**
      * @see UserInterface
      */
@@ -91,5 +112,17 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getImprovisator(): ?Improvisator
+    {
+        return $this->improvisator;
+    }
+
+    public function setImprovisator(?Improvisator $improvisator): self
+    {
+        $this->improvisator = $improvisator;
+
+        return $this;
     }
 }
