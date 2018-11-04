@@ -42,13 +42,13 @@ class TroupeController extends AbstractController
     
     
     /**
-     * @Route("/troupe/{shortName}", name="troupe_shortName")
+     * @Route("/troupe/{identifier}", name="troupe_identifier")
      */
-    public function troupeByShortName($shortName, EntityManagerInterface $em)
+    public function troupeByShortName($identifier, EntityManagerInterface $em)
     {
         $repository = $em->getRepository(Troupe::class);
         
-        $troupe = $repository->findOneBy(array("shortName" =>$shortName));
+        $troupe = $repository->findOneBy(array("identifier" =>$identifier));
         
         return $this->render('troupe/troupe.html.twig', [
             'troupe' =>$troupe,

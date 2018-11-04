@@ -13,5 +13,13 @@
 {{ troupe.location }}<br>
 {{ troupe.description }}
 
+<h2>Members</h2>
+
+{% for membership in  troupe.memberships %}
+
+<a href="{{ path("improvisator_identifier", {identifier: membership.improvisator.identifier}) }}">{{ membership.improvisator.name }}</a>, {{ membership.role }}<br>
+
+{% endfor %}
+
 </div>
 {% endblock %}

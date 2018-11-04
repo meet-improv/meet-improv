@@ -9,7 +9,7 @@
     <h1>Troupe list</h1>
 
 {% for troupe in troupes %}
-<a href="{{ path("troupe_shortName", {shortName: troupe.shortName}) }}">{{ troupe.name }} ({{ troupe.shortName }})</a> <br>
+<a href="{{ path("troupe_identifier", {identifier: troupe.identifier}) }}">{{ troupe.name }} ({{ troupe.shortName }})</a> <br>
 {% endfor %}
 
 </div>
