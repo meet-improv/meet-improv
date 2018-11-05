@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -37,9 +39,21 @@ class User implements UserInterface
      * @ORM\OneToOne(targetEntity="App\Entity\Improvisator", inversedBy="user", cascade={"persist", "remove"})
      */
     private $improvisator;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Contributor", mappedBy="superAdmins")
+     */
+    private $superAdminOfContributors;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Contributor", mappedBy="admins")
+     */
+    private $adminOfContributors;
     
     public function  __construct(){
         $this->id = Uuid::uuid4();
+        $this->superAdminOfContributors = new ArrayCollection();
+        $this->adminOfContributors = new ArrayCollection();
     }
 
     public function getId()
@@ -123,6 +137,63 @@ class User implements UserInterface
     {
         $this->improvisator = $improvisator;
 
+        return $this;
+    }
+
+    /**
+     * @return Collection|Contributor[]
+     */
+    public function getSuperAdminOfContributors(): Collection
+    {
+        return $this->superAdminOfContributors;
+    }
+
+    public function addSuperAdminOfContributor(Contributor $superAdminOfContributor): self
+    {
+        if (!$this->superAdminOfContributors->contains($superAdminOfContributor)) {
+            $this->superAdminOfContributors[] = $superAdminOfContributor;
+            $superAdminOfContributor->addSuperAdmin($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSuperAdminOfContributor(Contributor $superAdminOfContributor): self
+    {
+        if ($this->superAdminOfContributors->contains($superAdminOfContributor)) {
+            $this->superAdminOfContributors->removeElement($superAdminOfContributor);
+            $superAdminOfContributor->removeSuperAdmin($this);
+        }
+
+        return $this;
+    }
+    
+    
+    /**
+     * @return Collection|Contributor[]
+     */
+    public function getAdminOfContributors(): Collection
+    {
+        return $this->adminOfContributors;
+    }
+    
+    public function addAdminOfContributor(Contributor $adminOfContributor): self
+    {
+        if (!$this->adminOfContributors->contains($adminOfContributor)) {
+            $this->adminOfContributors[] = $adminOfContributor;
+            $adminOfContributor->addadmin($this);
+        }
+        
+        return $this;
+    }
+    
+    public function removeAdminOfContributor(Contributor $adminOfContributor): self
+    {
+        if ($this->adminOfContributors->contains($adminOfContributor)) {
+            $this->adminOfContributors->removeElement($adminOfContributor);
+            $adminOfContributor->removeAdmin($this);
+        }
+        
         return $this;
     }
 }

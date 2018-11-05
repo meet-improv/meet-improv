@@ -29,4 +29,20 @@ class SecurityController extends AbstractController
     {
         throw new \Exception('Will be intercepted before getting here');
     }
+    
+    /**
+     * @Route("/logout_redirect", name="logout_redirect")
+     */
+    public function redirectLogout()
+    {
+        return $this->redirectToRoute('troupe');
+    }
+    
+    /**
+     * @Route("/login_redirect", name="login_redirect")
+     */
+    public function redirectLogin()
+    {
+        return $this->redirectToRoute('troupe');
+    }
 }

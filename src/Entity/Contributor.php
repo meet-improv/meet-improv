@@ -6,6 +6,8 @@
  */
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -58,7 +60,7 @@ abstract class Contributor
 
 
     /**
-     * @ORM\Column(type="string", length=20)   
+     * @ORM\Column(type="string", length=70)   
      */
     private $shortName;
 
@@ -72,6 +74,24 @@ abstract class Contributor
      * @ORM\Column(type="string", length=100)
      */
     private $location='';
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $createdBy;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="superAdminOfContributors")
+     * @ORM\JoinTable(name="contributors_super_admins")
+     */
+    private $superAdmins;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User")
+     * @ORM\JoinTable(name="contributors_admins")
+     */
+    private $admins;
     
     public function getLocation(): ?string
     {
@@ -87,6 +107,8 @@ abstract class Contributor
     
     public function  __construct(){
         $this->id = Uuid::uuid4();
+        $this->superAdmins = new ArrayCollection();
+        $this->admins = new ArrayCollection();
     }
 
     public function getId()
@@ -141,6 +163,70 @@ abstract class Contributor
     public function setIdentifier(string $identifier): self
     {
         $this->identifier = $identifier;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): self
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getSuperAdmins(): Collection
+    {
+        return $this->superAdmins;
+    }
+
+    public function addSuperAdmin(User $superAdmin): self
+    {
+        if (!$this->superAdmins->contains($superAdmin)) {
+            $this->superAdmins[] = $superAdmin;
+        }
+
+        return $this;
+    }
+
+    public function removeSuperAdmin(User $superAdmin): self
+    {
+        if ($this->superAdmins->contains($superAdmin)) {
+            $this->superAdmins->removeElement($superAdmin);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getAdmins(): Collection
+    {
+        return $this->admins;
+    }
+
+    public function addAdmin(User $admin): self
+    {
+        if (!$this->admins->contains($admin)) {
+            $this->admins[] = $admin;
+        }
+
+        return $this;
+    }
+
+    public function removeAdmin(User $admin): self
+    {
+        if ($this->admins->contains($admin)) {
+            $this->admins->removeElement($admin);
+        }
 
         return $this;
     }
