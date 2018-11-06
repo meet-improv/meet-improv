@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 
+{% import "macros/contributor.macros.html.twig" as contributorMacros %}
+
+
 {% block title %}{{ parent()}} Improvisators{% endblock %}
 
 {% block body %}
@@ -9,7 +12,8 @@
     <h1>Improvisator list</h1>
 
 {% for improvisator in improvisators %}
-<a href="{{ path("improvisator_identifier", {identifier: improvisator.identifier}) }}">{{ improvisator.name }} ({{ improvisator.shortName }})</a> <br>
+
+{{ contributorMacros.contributorInline(improvisator) }}
 {% endfor %}
 
 </div>

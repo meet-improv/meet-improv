@@ -88,7 +88,7 @@ abstract class Contributor
     private $superAdmins;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User")
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="adminOfContributors")
      * @ORM\JoinTable(name="contributors_admins")
      */
     private $admins;

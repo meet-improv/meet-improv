@@ -55,6 +55,9 @@
       <li class="nav-item">
         <a class="nav-link" id="public-open-dates-tab" data-toggle="tab" href="#public-open-dates" role="tab" aria-controls="public-open-dates" aria-selected="false">Public open dates <span class="badge badge-secondary">0</span></a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" id="access-rights-tab" data-toggle="tab" href="#access-rights" role="tab" aria-controls="access-rights" aria-selected="false">Access rights <span class="badge badge-secondary">{{ contributor.admins|length + contributor.superAdmins|length}}</span></a>
+      </li>
     </ul>
     <div class="tab-content" id="myTabContent">
     {% if contributor.isImprovGroup %}
@@ -85,6 +88,18 @@
       {% endif %}
       <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="events-tab">EVENTS</div>
       <div class="tab-pane fade" id="public-open-dates" role="tabpanel" aria-labelledby="public-open-dates-tab">PUBLIC OPEN DATES</div>
+      
+      <div class="tab-pane fade" id="access-rights" role="tabpanel" aria-labelledby="access-rights-tab">
+      <b>Super admins</b><br>
+{% for user in contributor.superAdmins %}
+{{ user.username }}<br>
+{% endfor %}
+<b>Admins</b><br>
+{% for user in contributor.admins %}
+{{ user.username }}<br>
+{% endfor %}
+
+	  </div>
     </div>
     		
     		

@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 
+{% import "macros/contributor.macros.html.twig" as contributorMacros %}
+
+
 {% block title %}{{ parent()}} Troupes{% endblock %}
 
 {% block body %}
@@ -9,7 +12,7 @@
     <h1>Troupe list</h1>
 
 {% for troupe in troupes %}
-<a href="{{ path("troupe_identifier", {identifier: troupe.identifier}) }}">{{ troupe.name }} ({{ troupe.shortName }})</a> <br>
+{{ contributorMacros.contributorInline(troupe) }}
 {% endfor %}
 
 </div>
