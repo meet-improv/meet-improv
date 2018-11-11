@@ -17,7 +17,7 @@ class Membership
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=70, nullable=true)
      */
     private $role;
 

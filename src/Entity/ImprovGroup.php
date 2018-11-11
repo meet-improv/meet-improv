@@ -28,10 +28,7 @@ abstract class ImprovGroup extends Contributor
 {
     // attributes: creationDate, Location (can be null), list of improvisator
     
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $location;
+
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Membership", mappedBy="improvGroup", orphanRemoval=true)
@@ -44,18 +41,11 @@ abstract class ImprovGroup extends Contributor
         $this->memberships = new ArrayCollection();
     }
     
-    
-    public function getLocation(): ?string
-    {
-        return $this->location;
+    public function  isImprovGroup(){
+        return true;
     }
     
-    public function setLocation(string $location): self
-    {
-        $this->location = $location;
-        
-        return $this;
-    }
+    
 
     /**
      * @return Collection|Membership[]

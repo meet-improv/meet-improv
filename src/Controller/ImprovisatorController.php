@@ -7,13 +7,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Troupe;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Improvisator;
+use App\Security\Voter\ContributorVoter;
 
 class ImprovisatorController extends AbstractController
 {
     /**
      * @Route("/improvisator", name="improvisator")
      */
-    public function index(EntityManagerInterface $em)
+    public function listImprovisators(EntityManagerInterface $em)
     {
         
         
@@ -25,7 +26,7 @@ class ImprovisatorController extends AbstractController
         $parameters = array(
             'improvisators' => $improvisators);
         
-        return $this->render('improvisator/index.html.twig', $parameters);
+        return $this->render('improvisator/list_improvisators.html.twig', $parameters);
     }
     
     /**
@@ -50,6 +51,22 @@ class ImprovisatorController extends AbstractController
         $repository = $em->getRepository(improvisator::class);
         
         $improvisator = $repository->findOneBy(array("identifier" =>$identifier));
+        
+        return $this->render('improvisator/improvisator.html.twig', [
+            'improvisator' =>$improvisator,
+        ]);
+    }
+    
+    /**
+     * @Route("/improvisator/{identifier}/edit", name="improvisator_identifier_edit")
+     */
+    public function improvisatorEditByShortName($identifier, EntityManagerInterface $em)
+    {
+        $repository = $em->getRepository(Improvisator::class);
+        
+        $improvisator = $repository->findOneBy(array("identifier" =>$identifier));
+        
+        $this->denyAccessUnlessGranted(ContributorVoter::EDIT_CONTRIBUTOR, $improvisator);
         
         return $this->render('improvisator/improvisator.html.twig', [
             'improvisator' =>$improvisator,

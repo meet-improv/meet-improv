@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block title %}{{ parent()}} Users{% endblock %}
+
+{% block body %}
+
+
+<div class=" ">
+    <h1>User list</h1>
+
+{% for user in users %}
+
+<i class="fas fa-user"></i> <a href="{{ path("user_profile", {username: user.username }) }}">{{ user.username }}</a> <br>
+
+{% endfor %}
+
+</div>
+{% endblock %}

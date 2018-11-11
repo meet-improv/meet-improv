@@ -1,0 +1,20 @@
+{% macro contributorInline(contributor) %}
+
+	{% if contributor.type == "troupe" %}
+        
+        <i class="fas fa-theater-masks" data-toggle='tooltip' title='{{ contributor.type }}'></i>
+        <a href="{{ path("troupe_identifier", {identifier: contributor.identifier}) }}">
+	{% elseif contributor.type == "improvisator" %}
+        
+        <i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ contributor.type }}'></i>
+        <a href="{{ path("improvisator_identifier", {identifier: contributor.identifier}) }}">
+	{% elseif contributor.type == "team" %}
+       
+        <i class="fas fa-users"  data-toggle='tooltip' title='{{ contributor.type }}'></i>
+         {# <a href="{{ path("team_identifier", {identifier: contributor.identifier}) }}"> #}
+	{% else %}
+	{% endif %}
+
+        {{ contributor.name }}</a> ({{ contributor.shortName }}) <br>
+    
+{% endmacro %}

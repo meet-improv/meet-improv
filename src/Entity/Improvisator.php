@@ -25,6 +25,11 @@ class Improvisator extends Contributor
      */
     private $memberships;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\User", mappedBy="improvisator", cascade={"persist", "remove"})
+     */
+    private $user;
+
     public function __construct()
     {
         parent::__construct();
@@ -35,6 +40,10 @@ class Improvisator extends Contributor
         return parent::TYPE_IMPROVISATOR;
     }
 
+    public function  isImprovGroup(){
+        return false;
+    }
+    
     /**
      * @return Collection|Membership[]
      */
@@ -61,6 +70,24 @@ class Improvisator extends Contributor
             if ($membership->getImprovisator() === $this) {
                 $membership->setImprovisator(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newImprovisator = $user === null ? null : $this;
+        if ($newImprovisator !== $user->getImprovisator()) {
+            $user->setImprovisator($newImprovisator);
         }
 
         return $this;

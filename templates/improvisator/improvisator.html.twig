@@ -1,24 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'contributor.base.html.twig' %}
 
-{% block title %}{{ parent()}} Improvisator{% endblock %}
-
-{% block body %}
-
-
-<div class=" ">
-    <h1>Improvisator</h1>
+{% set contributor = improvisator %}
+{% block contributor_details %}
+{{ parent() }}
 
 
-{{ improvisator.name }} ({{ improvisator.shortName }}) <br>
-{{ improvisator.description }}
+{% endblock %}
 
-<h2>Troupes</h2>
+{% block contributor_content %}
 
-{% for membership in  improvisator.memberships %}
 
-{{ membership.role }}: {{ membership.improvGroup.type }} <a href="{{ path("troupe_identifier", {identifier: membership.improvGroup.identifier}) }}">{{ membership.improvGroup.name }}</a><br>
-
-{% endfor %}
-
-</div>
 {% endblock %}

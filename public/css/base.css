@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css?family=Pacifico');
+
+
+body{
+	background-color: #bdb8db;
+}
+
+.navbar-brand{
+	font-family: 'Pacifico', cursive;
+
+}
+
+.main-container{
+	margin-top: 10px;
+	margin-bottom : 10px;
+	background-color: white;
+	box-shadow: 5px 5px 8px black;
+}
+
+.contributor-banner, .contributor-details, .contributor-content{
+	padding: 5px;	
+}
+
+.contributor-banner{
+	margin-right: 50px;
+	position:relative;
+	height: 300px
+}
+
+.contributor-name{
+	color: white;
+	font-size: xx-large;
+	font-weight: bold;
+	text-shadow: 0px 0px 10px black;
+	position:absolute;                  
+   	bottom:0;                           
+   	left:300px;
+}
+
+.contributor-profile{
+	height:200px;
+	width:200px;
+	background-color: white;
+	position:absolute;                  
+   	bottom:-50px;                           
+   	left: 50px;
+   	z-index:3000;
+}
+
+.contributor-content,.contributor-details{
+	padding-top:60px;
+}
+
+.contributor-details{
+	margin-right: 10px;
+	background-color: #f4ede5;
+}
+
+
+
+
