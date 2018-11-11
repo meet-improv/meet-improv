@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Troupe;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Security\Voter\ContributorVoter;
 
 class TroupeController extends AbstractController
 {
@@ -51,6 +52,22 @@ class TroupeController extends AbstractController
         $troupe = $repository->findOneBy(array("identifier" =>$identifier));
         
         return $this->render('troupe/troupe.html.twig', [
+            'troupe' =>$troupe,
+        ]);
+    }
+    
+    /**
+     * @Route("/troupe/{identifier}/edit", name="troupe_identifier_edit")
+     */
+    public function troupeEditByShortName($identifier, EntityManagerInterface $em)
+    {
+        $repository = $em->getRepository(Troupe::class);
+        
+        $troupe = $repository->findOneBy(array("identifier" =>$identifier));
+        
+        $this->denyAccessUnlessGranted(ContributorVoter::EDIT_CONTRIBUTOR, $troupe);
+        
+        return $this->render('troupe/troupe_edit.html.twig', [
             'troupe' =>$troupe,
         ]);
     }

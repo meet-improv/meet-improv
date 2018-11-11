@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OpenDateRepository")
@@ -13,8 +14,7 @@ class OpenDate
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="uuid")
      */
     private $id;
 
@@ -60,8 +60,15 @@ class OpenDate
      */
     private $invitedContributors;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $createdBy;
+
     public function __construct()
     {
+        $this->id = Uuid::uuid4();
         $this->invitedContributors = new ArrayCollection();
     }
 
@@ -176,6 +183,18 @@ class OpenDate
         if ($this->invitedContributors->contains($invitedContributor)) {
             $this->invitedContributors->removeElement($invitedContributor);
         }
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): self
+    {
+        $this->createdBy = $createdBy;
 
         return $this;
     }

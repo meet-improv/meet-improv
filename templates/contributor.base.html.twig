@@ -29,6 +29,21 @@
          <br>
          <br>
         {{ contributor.description }}<br>
+        
+        <br><br>
+        {% if is_granted('EDIT_CONTRIBUTOR', contributor) %}
+        	{% if contributor.type == "troupe" %}
+            	<a href="{{ path("troupe_identifier_edit", {identifier: contributor.identifier}) }}">
+            {% elseif contributor.type == "improvisator" %}
+            	<a href="{{ path("improvisator_identifier_edit", {identifier: contributor.identifier}) }}">
+            {% elseif contributor.type == "team" %}
+            	<a href="{{ path("team_identifier_edit", {identifier: contributor.identifier}) }}">
+            {% else %}
+            {% endif %}
+            EDIT</a>
+        {% else %}
+            Sorry you don't have permissions to edit this!
+        {% endif %}
         {% endblock %}
     </div>
     <div class="col contributor-content">

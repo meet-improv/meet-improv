@@ -140,60 +140,6 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Contributor[]
-     */
-    public function getSuperAdminOfContributors(): Collection
-    {
-        return $this->superAdminOfContributors;
-    }
-
-    public function addSuperAdminOfContributor(Contributor $superAdminOfContributor): self
-    {
-        if (!$this->superAdminOfContributors->contains($superAdminOfContributor)) {
-            $this->superAdminOfContributors[] = $superAdminOfContributor;
-            $superAdminOfContributor->addSuperAdmin($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSuperAdminOfContributor(Contributor $superAdminOfContributor): self
-    {
-        if ($this->superAdminOfContributors->contains($superAdminOfContributor)) {
-            $this->superAdminOfContributors->removeElement($superAdminOfContributor);
-            $superAdminOfContributor->removeSuperAdmin($this);
-        }
-
-        return $this;
-    }
     
-    
-    /**
-     * @return Collection|Contributor[]
-     */
-    public function getAdminOfContributors(): Collection
-    {
-        return $this->adminOfContributors;
-    }
-    
-    public function addAdminOfContributor(Contributor $adminOfContributor): self
-    {
-        if (!$this->adminOfContributors->contains($adminOfContributor)) {
-            $this->adminOfContributors[] = $adminOfContributor;
-            $adminOfContributor->addadmin($this);
-        }
-        
-        return $this;
-    }
-    
-    public function removeAdminOfContributor(Contributor $adminOfContributor): self
-    {
-        if ($this->adminOfContributors->contains($adminOfContributor)) {
-            $this->adminOfContributors->removeElement($adminOfContributor);
-            $adminOfContributor->removeAdmin($this);
-        }
-        
-        return $this;
-    }
+
 }
