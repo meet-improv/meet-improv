@@ -13,6 +13,9 @@
 
  EDIT EDIT EDIT EDIT EDIT EDIT EDIT 
 
+{{ form_start(troupeform) }}
+{{ form_widget(troupeform) }}
+{{ form_end(troupeform) }}
 
-
+{{ troupe.createdAt | date('Y-m-d H:i')}} - {{ troupe.updatedAt | date('Y-m-d H:i')}}
 {% endblock %}
