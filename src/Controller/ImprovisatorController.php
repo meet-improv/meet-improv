@@ -13,7 +13,7 @@ class ImprovisatorController extends AbstractController
     /**
      * @Route("/improvisator", name="improvisator")
      */
-    public function index(EntityManagerInterface $em)
+    public function listImprovisators(EntityManagerInterface $em)
     {
         
         
@@ -25,7 +25,7 @@ class ImprovisatorController extends AbstractController
         $parameters = array(
             'improvisators' => $improvisators);
         
-        return $this->render('improvisator/index.html.twig', $parameters);
+        return $this->render('improvisator/list_improvisators.html.twig', $parameters);
     }
     
     /**

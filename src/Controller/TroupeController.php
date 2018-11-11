@@ -12,7 +12,7 @@ class TroupeController extends AbstractController
     /**
      * @Route("/troupe", name="troupe")
      */
-    public function index(EntityManagerInterface $em)
+    public function listTroupes(EntityManagerInterface $em)
     {
         
         
@@ -24,7 +24,7 @@ class TroupeController extends AbstractController
         $parameters = array(
             'troupes' => $troupes);
         
-        return $this->render('troupe/index.html.twig', $parameters);
+        return $this->render('troupe/list_troupes.html.twig', $parameters);
     }
     
     /**

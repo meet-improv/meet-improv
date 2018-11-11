@@ -92,6 +92,16 @@ abstract class Contributor
      * @ORM\JoinTable(name="contributors_admins")
      */
     private $admins;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\OpenDate", mappedBy="owner")
+     */
+    private $ownedOpenDates;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\OpenDate", mappedBy="invitedContributors")
+     */
+    private $invitedToOpenDates;
     
     public function getLocation(): ?string
     {
@@ -109,6 +119,8 @@ abstract class Contributor
         $this->id = Uuid::uuid4();
         $this->superAdmins = new ArrayCollection();
         $this->admins = new ArrayCollection();
+        $this->ownedOpenDates = new ArrayCollection();
+        $this->invitedToOpenDates = new ArrayCollection();
     }
 
     public function getId()
@@ -226,6 +238,65 @@ abstract class Contributor
     {
         if ($this->admins->contains($admin)) {
             $this->admins->removeElement($admin);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|OpenDate[]
+     */
+    public function getOwnedOpenDates(): Collection
+    {
+        return $this->ownedOpenDates;
+    }
+
+    public function addOwnedOpenDate(OpenDate $ownedOpenDate): self
+    {
+        if (!$this->ownedOpenDates->contains($ownedOpenDate)) {
+            $this->ownedOpenDates[] = $ownedOpenDate;
+            $ownedOpenDate->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOwnedOpenDate(OpenDate $ownedOpenDate): self
+    {
+        if ($this->ownedOpenDates->contains($ownedOpenDate)) {
+            $this->ownedOpenDates->removeElement($ownedOpenDate);
+            // set the owning side to null (unless already changed)
+            if ($ownedOpenDate->getOwner() === $this) {
+                $ownedOpenDate->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|OpenDate[]
+     */
+    public function getInvitedToOpenDates(): Collection
+    {
+        return $this->invitedToOpenDates;
+    }
+
+    public function addInvitedToOpenDate(OpenDate $invitedToOpenDate): self
+    {
+        if (!$this->invitedToOpenDates->contains($invitedToOpenDate)) {
+            $this->invitedToOpenDates[] = $invitedToOpenDate;
+            $invitedToOpenDate->addInvitedContributor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitedToOpenDate(OpenDate $invitedToOpenDate): self
+    {
+        if ($this->invitedToOpenDates->contains($invitedToOpenDate)) {
+            $this->invitedToOpenDates->removeElement($invitedToOpenDate);
+            $invitedToOpenDate->removeInvitedContributor($this);
         }
 
         return $this;
