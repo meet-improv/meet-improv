@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import "macros/contributor.macros.html.twig" as contributorMacros %}
 
 {% block title %}{{ parent()}} {{ contributor.shortName }}{% endblock %}
 {% block stylesheets %}
@@ -8,45 +9,31 @@
 
 <div class="container main-container">
   <div class="row" >
-    <div class="col-12 contributor-banner"  style="background-image: url('https://aia-le-site.com/wp-content/uploads/2015/01/diapo3.jpg');">
-    		<div class="contributor-profile" style="background-image: url('http://aia-le-site.com/wp-content/uploads/2015/02/MHLebee_logo_header.png');"></div>
+    <div class="col-12 contributor-banner"  style="background-image: url('{{ contributor.bannerPicUrl is not null ? contributor.bannerPicUrl : 'https://www.incimages.com/uploaded_files/image/1940x900/question-marks-1940x900_35723.jpg'}}');">
+    		<div class="contributor-profile" style="background-image: url('{{ contributor.profilePicUrl is not null ? contributor.profilePicUrl : 'http://tlumaczeniasamochodowe.eu/wp-content/uploads/2017/03/9T465KxEc.png' }}');"></div>
     		<div class="contributor-name">{{ contributor.name }}</div>
     </div>
   </div>
   <div class="row">
     <div class="col-3 contributor-details">
+   
         {% block contributor_details %}
-        {% if contributor.type == "troupe" %}
-        <i class="fas fa-theater-masks" data-toggle='tooltip' title='{{ contributor.type }}'></i>
-        {% elseif contributor.type == "improvisator" %}
-        <i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ contributor.type }}'></i>
-        {% elseif contributor.type == "team" %}
-        <i class="fas fa-users"  data-toggle='tooltip' title='{{ contributor.type }}'></i>
-        {% else %}
-        {% endif %}
-         <i>{{ contributor.shortName }}</i><br>
+         {{ contributorMacros.contributorIcon(contributor.type) }}<i>{{ contributor.shortName }}</i><br>
          {{ contributor.location }}
          <br>
          <br>
         {{ contributor.description }}<br>
         
         <br><br>
-        {% if is_granted('EDIT_CONTRIBUTOR', contributor) %}
-        	{% if contributor.type == "troupe" %}
-            	<a href="{{ path("troupe_identifier_edit", {identifier: contributor.identifier}) }}">
-            {% elseif contributor.type == "improvisator" %}
-            	<a href="{{ path("improvisator_identifier_edit", {identifier: contributor.identifier}) }}">
-            {% elseif contributor.type == "team" %}
-            	<a href="{{ path("team_identifier_edit", {identifier: contributor.identifier}) }}">
-            {% else %}
-            {% endif %}
-            EDIT</a>
+        {% if is_granted(constant('App\\Security\\Voter\\ContributorVoter::EDIT_CONTRIBUTOR'), contributor) %}
+        <a href="{{ path("contributor_identifier_edit", {identifier: contributor.identifier, contributor_type:contributor.type}) }}"><i class="fas fa-edit"></i></a>
         {% else %}
             Sorry you don't have permissions to edit this!
         {% endif %}
         {% endblock %}
     </div>
     <div class="col contributor-content">
+    {% block contributor_content %}
     		
     <ul class="nav nav-tabs" id="myTab" role="tablist">
     
@@ -79,7 +66,7 @@
       <div class="tab-pane fade show active" id="members" role="tabpanel" aria-labelledby="members-tab">
           {% for membership in  contributor.memberships %}
 
-     		<i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ membership.improvisator.type }}'></i> <a href="{{ path("improvisator_identifier", {identifier: membership.improvisator.identifier}) }}">{{ membership.improvisator.name }}</a>, {{ membership.role }}<br>
+     		<i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ membership.improvisator.type }}'></i> <a href="{{ path("contributor_identifier", {identifier: membership.improvisator.identifier, contributor_type: membership.improvisator.type}) }}">{{ membership.improvisator.name }}</a>, {{ membership.role }}<br>
     
         {% endfor %}
     </div>
@@ -93,7 +80,7 @@
         	<i class="fas fa-users"  data-toggle='tooltip' title='{{ membership.improvGroup.type }}'></i>
         {% else %}
         {% endif %}
-        <a href="{{ path("troupe_identifier", {identifier: membership.improvGroup.identifier}) }}">{{ membership.improvGroup.name }}</a><br>
+        <a href="{{ path("contributor_identifier", {identifier: membership.improvGroup.identifier, contributor_type:membership.improvGroup.type}) }}">{{ membership.improvGroup.name }}</a><br>
     
     {% endfor %}
       </div>
@@ -114,11 +101,18 @@
 {{ user.username }}<br>
 {% endfor %}
 
+
+        {% if is_granted(constant('App\\Security\\Voter\\ContributorVoter::MANAGE_USER_AS_EDITOR'), contributor) %}
+        	<a href="{{ path("contributor_identifier_manage_editors", {identifier: contributor.identifier, contributor_type: contributor.type}) }}"><i class="fas fa-user-edit"></i></a>
+        {% else %}
+            Sorry you don't have permissions to edit this!
+        {% endif %}
+
 	  </div>
     </div>
     		
     		
-      {% block contributor_content %}
+      
 {% endblock %}
 
     </div>

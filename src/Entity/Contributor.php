@@ -102,6 +102,16 @@ abstract class Contributor
      * @ORM\ManyToMany(targetEntity="App\Entity\OpenDate", mappedBy="invitedContributors")
      */
     private $invitedToOpenDates;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $bannerPicUrl;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $profilePicUrl;
     
     public function getLocation(): ?string
     {
@@ -298,6 +308,30 @@ abstract class Contributor
             $this->invitedToOpenDates->removeElement($invitedToOpenDate);
             $invitedToOpenDate->removeInvitedContributor($this);
         }
+
+        return $this;
+    }
+
+    public function getBannerPicUrl(): ?string
+    {
+        return $this->bannerPicUrl;
+    }
+
+    public function setBannerPicUrl(?string $bannerPicUrl): self
+    {
+        $this->bannerPicUrl = $bannerPicUrl;
+
+        return $this;
+    }
+
+    public function getProfilePicUrl(): ?string
+    {
+        return $this->profilePicUrl;
+    }
+
+    public function setProfilePicUrl(?string $profilePicUrl): self
+    {
+        $this->profilePicUrl = $profilePicUrl;
 
         return $this;
     }

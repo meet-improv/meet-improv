@@ -11,8 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class ContributorVoter extends Voter
 {
     const EDIT_CONTRIBUTOR = 'EDIT_CONTRIBUTOR';
-    const ADD_USER_AS_EDITOR = 'ADD_USER_AS_EDITOR';
-    const REMOVE_USER_AS_EDITOR = 'REMOVE_USER_AS_EDITOR';
+    const MANAGE_USER_AS_EDITOR = 'MANAGE_USER_AS_EDITOR';
     
     const CREATE_EVENT_AS_CONTRIBUTOR = 'CREATE_EVENT_AS_CONTRIBUTOR';
     const CREATE_OPENDATE_AS_CONTRIBUTOR = 'CREATE_OPENDATE_AS_CONTRIBUTOR';
@@ -32,7 +31,7 @@ class ContributorVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT_CONTRIBUTOR, self::ADD_USER_AS_EDITOR, self::REMOVE_USER_AS_EDITOR])
+        return in_array($attribute, [self::EDIT_CONTRIBUTOR, self::MANAGE_USER_AS_EDITOR])
             && $subject instanceof Contributor;
     }
 
@@ -56,14 +55,11 @@ class ContributorVoter extends Voter
                 
                 return $contributor->getAdmins()->contains($user);
                 break;
-            case self::ADD_USER_AS_EDITOR:
+            case self::MANAGE_USER_AS_EDITOR:
                 
                 return $contributor->getSuperAdmins()->contains($user);
                 break;
-            case self::REMOVE_USER_AS_EDITOR:
-                
-                return $contributor->getSuperAdmins()->contains($user);
-                break;
+
         }
 
         return false;

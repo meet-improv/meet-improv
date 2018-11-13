@@ -1,20 +1,16 @@
-{% macro contributorInline(contributor) %}
 
-	{% if contributor.type == "troupe" %}
-        
-        <i class="fas fa-theater-masks" data-toggle='tooltip' title='{{ contributor.type }}'></i>
-        <a href="{{ path("troupe_identifier", {identifier: contributor.identifier}) }}">
-	{% elseif contributor.type == "improvisator" %}
-        
-        <i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ contributor.type }}'></i>
-        <a href="{{ path("improvisator_identifier", {identifier: contributor.identifier}) }}">
-	{% elseif contributor.type == "team" %}
-       
-        <i class="fas fa-users"  data-toggle='tooltip' title='{{ contributor.type }}'></i>
-         {# <a href="{{ path("team_identifier", {identifier: contributor.identifier}) }}"> #}
+{% macro contributorInline(contributor) %}
+{% import _self as self %}
+{{ self.contributorIcon(contributor.type) }} <a href="{{ path("contributor_identifier", {identifier: contributor.identifier, contributor_type: contributor.type}) }}">{{ contributor.name }}</a> ({{ contributor.shortName }})
+{% endmacro %}
+
+{% macro contributorIcon(type) %}
+	{% if type == constant('App\\Entity\\Contributor::TYPE_TROUPE') %}
+        <i class="fas fa-theater-masks" data-toggle='tooltip' title='{{ type }}'></i>
+	{% elseif type == constant('App\\Entity\\Contributor::TYPE_IMPROVISATOR') %}
+        <i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ type }}'></i>
+	{% elseif type == constant('App\\Entity\\Contributor::TYPE_TEAM') %}
+        <i class="fas fa-users"  data-toggle='tooltip' title='{{ type }}'></i>
 	{% else %}
 	{% endif %}
-
-        {{ contributor.name }}</a> ({{ contributor.shortName }}) <br>
-    
 {% endmacro %}
