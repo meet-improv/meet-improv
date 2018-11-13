@@ -55,6 +55,11 @@ class User implements UserInterface
         $this->superAdminOfContributors = new ArrayCollection();
         $this->adminOfContributors = new ArrayCollection();
     }
+    
+    /*
+    public function __toString(){
+        return $this->username;
+    }  */
 
     public function getId()
     {

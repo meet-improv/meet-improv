@@ -1,17 +1,10 @@
-{% extends 'contributor.base.html.twig' %}
-
-{% set contributor = troupe %}
-{% block contributor_details %}
-
-{{ parent() }}
+{% extends 'base.html.twig' %}
 
 
-{% endblock %}
-
-{% block contributor_content %}
 
 
- EDIT EDIT EDIT EDIT EDIT EDIT EDIT 
+{% block body %}
+
 
 {{ form_start(troupeform) }}
 {{ form_widget(troupeform) }}

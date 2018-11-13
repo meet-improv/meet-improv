@@ -8,8 +8,12 @@
 {% block body %}
 
 
-<div class=" ">
-    <h1>Troupe list</h1>
+<div class="container">
+
+	
+    <h1>Troupe list <a class="btn btn-primary" href="{{ path('troupe_create') }}" role="button">Register a troupe! <span class="fa fa-plus-circle"></span></a></h1>
+    
+    
 
 {% for troupe in troupes %}
 {{ contributorMacros.contributorInline(troupe) }}
