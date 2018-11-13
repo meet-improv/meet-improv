@@ -21,8 +21,25 @@ use Ramsey\Uuid\Uuid;
  */
 class Team  extends ImprovGroup
 {
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Troupe", inversedBy="teams")
+     */
+    private $troupe;
+
     public function getType() {
         return parent::TYPE_TEAM;
+    }
+
+    public function getTroupe(): ?Troupe
+    {
+        return $this->troupe;
+    }
+
+    public function setTroupe(?Troupe $troupe): self
+    {
+        $this->troupe = $troupe;
+
+        return $this;
     }
     
   

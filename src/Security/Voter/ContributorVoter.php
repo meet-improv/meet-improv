@@ -7,6 +7,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Contributor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use App\Entity\Team;
 
 class ContributorVoter extends Voter
 {
@@ -53,11 +54,27 @@ class ContributorVoter extends Voter
         switch ($attribute) {
             case self::EDIT_CONTRIBUTOR:
                 
-                return $contributor->getAdmins()->contains($user);
+                if($contributor->getType() == Contributor::TYPE_TEAM && !is_null($contributor->getTroupe())){
+                    /** @var Team $contributor */
+                    return $contributor->getAdmins()->contains($user) or $contributor->getTroupe()->getAdmins()->contains($user);
+                }else{
+                    /** @var Contributor $contributor */
+                    return $contributor->getAdmins()->contains($user);
+                }
+                
+                
                 break;
             case self::MANAGE_USER_AS_EDITOR:
                 
-                return $contributor->getSuperAdmins()->contains($user);
+                if($contributor->getType() == Contributor::TYPE_TEAM && !is_null($contributor->getTroupe()) ){
+                    /** @var Team $contributor */
+                    return $contributor->getSuperAdmins()->contains($user) or $contributor->getTroupe()->getSuperAdmins()->contains($user);
+                }else{
+                    /** @var Contributor $contributor */
+                    return $contributor->getSuperAdmins()->contains($user);
+                }
+                
+                
                 break;
 
         }

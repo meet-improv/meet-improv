@@ -35,7 +35,7 @@ class SecurityController extends AbstractController
      */
     public function redirectLogout()
     {
-        return $this->redirectToRoute('troupe');
+        return $this->redirectToRoute('home');
     }
     
     /**
@@ -43,6 +43,6 @@ class SecurityController extends AbstractController
      */
     public function redirectLogin()
     {
-        return $this->redirectToRoute('troupe');
+        return $this->redirectToRoute('home');
     }
 }

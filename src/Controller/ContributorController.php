@@ -10,7 +10,6 @@ use App\Security\Voter\ContributorVoter;
 use Symfony\Component\HttpFoundation\Request;
 use ErrorException;
 use App\Form\ContributorEditFormType;
-use App\Entity\Membership;
 use App\Form\ContributorManageEditorsFormType;
 use App\Entity\Contributor;
 use App\Entity\Improvisator;
@@ -162,7 +161,7 @@ class ContributorController extends AbstractController
             
             
             $this->addFlash('success', 'Cool, the '.$contributor->getType().' has been updated!');
-            return $this->redirectToRoute('troupe_identifier',array('identifier'=>$contributor->getIdentifier()));
+            return $this->redirectToRoute('contributor_identifier',array('identifier'=>$contributor->getIdentifier(), 'contributor_type' => $contributor->getType()));
             
 
         }
@@ -217,66 +216,6 @@ class ContributorController extends AbstractController
         return $this->render('contributor_abstract/contributor_edit.html.twig', [
             'contributor' =>$contributor,
             'form'=>$form->createView(),
-        ]);
-    }
-    
-
-    /**
-     * @Route("/troupe/{identifier}/manage_members", name="troupe_identifier_manage_members")
-     */
-    public function troupeManagerMembersByShortName($identifier, EntityManagerInterface $em, Request $request)
-    {
-        $repository = $em->getRepository(Troupe::class);
-        
-        $troupe = $repository->findOneBy(array("identifier" =>$identifier));
-        
-        $this->denyAccessUnlessGranted(ContributorVoter::EDIT_CONTRIBUTOR, $troupe);
-        
-        
-        $troupeform = $this->createForm(ContributorEditFormType::class);
-        $troupeform->setData($troupe);
-        $troupeform->handleRequest($request);
-        
-        if ($troupeform->isSubmitted() && $troupeform->isValid()) {
-            /**
-             *
-             * @var Troupe $troupe
-             */
-            $troupe=$troupeform->getData();
-            
-            $improvisators = $troupeform->getRoot()->get("improvisators")->getData();
-            
-            $date = new \DateTime("01-03-2014");
-            /** @var Improvisator $improvisator  */
-            foreach ($improvisators as $improvisator){
-                // dd($improvisator);
-                
-                $m = new Membership();
-                
-                $m->setImprovGroup($troupe)
-                ->setIsHidden(false)
-                ->setRole("member")
-                ->setStart($date)
-                ->setImprovisator($improvisator);
-                
-                $troupe->addMembership($m);
-                $em->persist($m);
-            }
-            
-            $em->persist($troupe);
-            $em->flush();
-            
-            
-            $this->addFlash('success', 'Troupe\'s members has been added!');
-            return $this->redirectToRoute('troupe_identifier',array('identifier'=>$troupe->getIdentifier()));
-            
-            
-        }
-        
-        return $this->render('troupe/troupe_edit.html.twig', [
-            'troupe' =>$troupe,
-            'form'=>$troupeform->createView(),
-            'improvisators' => $improvisators
         ]);
     }
     

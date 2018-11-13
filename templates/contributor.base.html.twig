@@ -23,6 +23,27 @@
          <br>
          <br>
         {{ contributor.description }}<br>
+        <br>
+        <br>
+        {% if contributor.type == constant('App\\Entity\\Contributor::TYPE_TEAM') %}
+        
+        	{% if contributor.troupe is not null %}
+        	
+        	A team of {{ contributorMacros.contributorInline(contributor.troupe) }}
+        
+            {% else %}
+            
+            This team is not associated to a troupe.
+            
+            {% endif %}
+            
+            {% if is_granted(constant('App\\Security\\Voter\\ContributorVoter::EDIT_CONTRIBUTOR'), contributor) %}
+            	<a href='{{ path('team_identifier_select_troupe',{ identifier: contributor.identifier }) }}'><i class="fas fa-arrow-left"></i></a>
+            {% else %}
+            	Sorry you don't have permissions to manage the association with a team!
+            {% endif %}
+        
+        {% endif %}
         
         <br><br>
         {% if is_granted(constant('App\\Security\\Voter\\ContributorVoter::EDIT_CONTRIBUTOR'), contributor) %}
@@ -58,7 +79,7 @@
         <a class="nav-link" id="public-open-dates-tab" data-toggle="tab" href="#public-open-dates" role="tab" aria-controls="public-open-dates" aria-selected="false">Public open dates <span class="badge badge-secondary">0</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="access-rights-tab" data-toggle="tab" href="#access-rights" role="tab" aria-controls="access-rights" aria-selected="false">Access rights <span class="badge badge-secondary">{{ contributor.admins|length + contributor.superAdmins|length}}</span></a>
+        <a class="nav-link" id="access-rights-tab" data-toggle="tab" href="#access-rights" role="tab" aria-controls="access-rights" aria-selected="false">Access rights <span class="badge badge-secondary">{{ contributor.admins|length + contributor.superAdmins|length}}{{ contributor.troupe is defined and contributor.troupe is not null ? " + "}}{{ contributor.troupe is defined and contributor.troupe is not null ? contributor.troupe.admins|length + contributor.troupe.superAdmins|length}}</span></a>
       </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -69,24 +90,24 @@
      		<i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ membership.improvisator.type }}'></i> <a href="{{ path("contributor_identifier", {identifier: membership.improvisator.identifier, contributor_type: membership.improvisator.type}) }}">{{ membership.improvisator.name }}</a>, {{ membership.role }}<br>
     
         {% endfor %}
+        <a href="{{ path("improvGroup_identifier_manage_members", {identifier: contributor.identifier, contributor_type: contributor.type}) }}"><i class="fa fa-plus-circle"></i></a>
     </div>
     {% else %}
     <div class="tab-pane fade show active" id="groups" role="tabpanel" aria-labelledby="groups-tab">
       {% for membership in  contributor.memberships %}
-{{ membership.role }} of 
-         {% if membership.improvGroup.type == "troupe" %}
-        	<i class="fas fa-theater-masks" data-toggle='tooltip' title='{{ membership.improvGroup.type }}'></i>
-        {% elseif membership.improvGroup.type == "team" %}
-        	<i class="fas fa-users"  data-toggle='tooltip' title='{{ membership.improvGroup.type }}'></i>
-        {% else %}
-        {% endif %}
-        <a href="{{ path("contributor_identifier", {identifier: membership.improvGroup.identifier, contributor_type:membership.improvGroup.type}) }}">{{ membership.improvGroup.name }}</a><br>
+{{ membership.role }} of  {{ contributorMacros.contributorIcon(membership.improvGroup.type) }} <a href="{{ path("contributor_identifier", {identifier: membership.improvGroup.identifier, contributor_type:membership.improvGroup.type}) }}">{{ membership.improvGroup.name }}</a><br>
     
     {% endfor %}
       </div>
     {% endif %}
      {% if contributor.teams is defined %}
-      <div class="tab-pane fade" id="teams" role="tabpanel" aria-labelledby="teams-tab">TEAMS</div>
+      <div class="tab-pane fade" id="teams" role="tabpanel" aria-labelledby="teams-tab">
+      {% for team in  contributor.teams %}
+      {{ contributorMacros.contributorInline(team) }}<br>
+      
+      {% endfor %}
+      
+      </div>
       {% endif %}
       <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="events-tab">EVENTS</div>
       <div class="tab-pane fade" id="public-open-dates" role="tabpanel" aria-labelledby="public-open-dates-tab">PUBLIC OPEN DATES</div>
@@ -102,11 +123,26 @@
 {% endfor %}
 
 
+
+
         {% if is_granted(constant('App\\Security\\Voter\\ContributorVoter::MANAGE_USER_AS_EDITOR'), contributor) %}
         	<a href="{{ path("contributor_identifier_manage_editors", {identifier: contributor.identifier, contributor_type: contributor.type}) }}"><i class="fas fa-user-edit"></i></a>
         {% else %}
             Sorry you don't have permissions to edit this!
         {% endif %}
+
+<br><br>
+{% if contributor.troupe is defined and contributor.troupe is not null %}
+      <b>Inherited super admins from troupe</b><br>
+{% for user in contributor.troupe.superAdmins %}
+{{ user.username }}<br>
+{% endfor %}
+<b>Inherited admins from troupe</b><br>
+{% for user in contributor.troupe.admins %}
+{{ user.username }}<br>
+{% endfor %}
+
+{% endif %}
 
 	  </div>
     </div>
