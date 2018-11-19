@@ -8,14 +8,15 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20181113124957 extends AbstractMigration
+final class Version20181118134201 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE contributor ADD banner_pic_url VARCHAR(255) DEFAULT NULL, ADD profile_pic_url VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE open_date CHANGE identifier identifier VARCHAR(255) NOT NULL');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_136A765F772E836A ON open_date (identifier)');
     }
 
     public function down(Schema $schema) : void
@@ -23,6 +24,7 @@ final class Version20181113124957 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE contributor DROP banner_pic_url, DROP profile_pic_url');
+        $this->addSql('DROP INDEX UNIQ_136A765F772E836A ON open_date');
+        $this->addSql('ALTER TABLE open_date CHANGE identifier identifier VARCHAR(160) NOT NULL COLLATE utf8mb4_unicode_ci');
     }
 }

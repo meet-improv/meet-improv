@@ -9,6 +9,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
  * The Team Entity represents a team composition.
  * It can hold Improvisator and me be associated to one Troupe
@@ -21,6 +23,7 @@ use Ramsey\Uuid\Uuid;
  */
 class Team  extends ImprovGroup
 {
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Troupe", inversedBy="teams")
      */

@@ -110,7 +110,47 @@
       </div>
       {% endif %}
       <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="events-tab">EVENTS</div>
-      <div class="tab-pane fade" id="public-open-dates" role="tabpanel" aria-labelledby="public-open-dates-tab">PUBLIC OPEN DATES</div>
+      <div class="tab-pane fade" id="public-open-dates" role="tabpanel" aria-labelledby="public-open-dates-tab">
+      PUBLIC OPEN DATES
+      
+          <br>
+      
+      {% for opendate in contributor.publicOwnedOpenDates %}
+        <a href="{{ path("opendate_identifier",{"identifier":opendate.identifier}) }}">{{ opendate.name }}</a> (by {{- contributorMacros.contributorInline(opendate.owner) -}})<br>
+      {% endfor %}
+      
+      {% if contributor.teams is defined %}
+      All Open dates  from teams <br>
+      
+      {% for team in  contributor.teams %}
+              {% for opendate in team.publicOwnedOpenDates %}
+                {{ contributorMacros.contributorInline(team) }}: <a href="{{ path("opendate_identifier",{"identifier":opendate.identifier}) }}">{{ opendate.name }}</a><br>
+              {% endfor %}
+      {% endfor %}
+      {% endif %}
+      
+      
+      
+      
+      <br><br><br>
+      
+      ALL OPEN DATES <br>
+      
+      {% for opendate in contributor.ownedOpenDates %}
+        <a href="{{ path("opendate_identifier",{"identifier":opendate.identifier}) }}">{{ opendate.name }}</a><br>
+      {% endfor %}
+      
+      {% if contributor.teams is defined %}
+      All Open dates  from teams <br>
+      
+      {% for team in  contributor.teams %}
+              {% for opendate in team.ownedOpenDates %}
+                {{ contributorMacros.contributorInline(team) }}: <a href="{{ path("opendate_identifier",{"identifier":opendate.identifier}) }}">{{ opendate.name }}</a><br>
+              {% endfor %}
+      {% endfor %}
+      {% endif %}
+      
+      </div>
       
       <div class="tab-pane fade" id="access-rights" role="tabpanel" aria-labelledby="access-rights-tab">
       <b>Super admins</b><br>

@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
+use App\Entity\OpenDate;
 
 /**
  * The Contributor abstract class represents any form of event contributor.
@@ -259,6 +260,40 @@ abstract class Contributor
     public function getOwnedOpenDates(): Collection
     {
         return $this->ownedOpenDates;
+    }
+    
+    /**
+     * @return Collection|OpenDate[]
+     */
+    public function getPublicOwnedOpenDates(): Collection
+    {
+        
+        
+        $publicOwnedOpenDates = new ArrayCollection();
+        
+        foreach ($this->ownedOpenDates->getValues() as $ownedOpenDate){
+            /** var OpenDate $ownedOpenDate */
+            if($ownedOpenDate->isPublic()){
+                $publicOwnedOpenDates->add($ownedOpenDate);
+            }
+        }
+        
+        if($this->getType() == self::TYPE_TROUPE){
+            /** var Troupe $this */
+            $teams = $this->getTeams();
+            
+            foreach ($teams as $team){
+                foreach ($team->ownedOpenDates->getValues() as $ownedOpenDate){
+                    /** var OpenDate $ownedOpenDate */
+                    if($ownedOpenDate->isPublic()){
+                        $publicOwnedOpenDates->add($ownedOpenDate);
+                    }
+                }
+            }
+        }
+        
+        
+        return $publicOwnedOpenDates;
     }
 
     public function addOwnedOpenDate(OpenDate $ownedOpenDate): self
