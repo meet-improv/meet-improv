@@ -8,12 +8,15 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OpenDateRepository")
  */
 class OpenDate
 {
+    use TimestampableEntity;
+    
     /**
      * @ORM\Id()
      * @ORM\Column(type="uuid_binary")

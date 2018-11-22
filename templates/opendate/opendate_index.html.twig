@@ -1,7 +1,43 @@
 {% extends 'base.html.twig' %}
+{% import "macros/contributor.macros.html.twig" as contributorMacros %}
+
 
 {% block title %}{{ parent() }}{% endblock %}
 
 {% block body %}
-{{ dump(opendate) }}
+
+<div class="container main-container">
+<h1>{{ opendate.name }}</h1>
+<h2>proposed by {{ contributorMacros.contributorInline(opendate.owner) }}</h2>
+
+<p>This date is {{ not opendate.isClosed ? 'still open! <i class="fas fa-lock-open"></i>' : 'closed. <i class="fas fa-lock"></i>' }}</p>
+<p>This date is {{ opendate.isPublic ?  '<i class="fas fa-eye"></i> public' : '<i class="fas fa-eye-slash"></i> private' }}</p>
+
+
+
+{{ opendate.description }}
+
+
+<br>
+            {% if is_granted(constant('App\\Security\\Voter\\OpenDateVoter::OPENDATE_EDIT'), opendate) %}
+            	<a href='{{ path('opendate_identifier_edit',{ identifier: opendate.identifier }) }}'><i class="fas fa-edit"></i></a>
+            {% else %}
+            	Sorry you don't have permissions to edit thie open date!
+            {% endif %}
+
+<br>
+
+    {% for invited in opendate.invitedContributors %}
+    {{ contributorMacros.contributorInline(invited) }}<br>
+    {% endfor %}
+
+
+            {% if is_granted(constant('App\\Security\\Voter\\OpenDateVoter::OPENDATE_EDIT'), opendate) %}
+            	<a href='{{ path('opendate_identifier_invite',{ identifier: opendate.identifier }) }}'><i class="fas fa-plus-circle"></i></a>
+            {% else %}
+            	Sorry you don't have permissions to invite other contributor!
+            {% endif %}
+
+            </div>
 {% endblock %}
+

@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\OpenDateRepository;
 use App\Form\OpenDateCreateFormType;
 use App\Entity\OpenDate;
+use App\Security\Voter\OpenDateVoter;
+use App\Form\OpenDateInvitationFormType;
 
 class OpenDateController extends AbstractController
 {
@@ -25,9 +27,102 @@ class OpenDateController extends AbstractController
             throw $this->createNotFoundException(sprintf('No opendate for "%s"', $identifier));
         }
         
+        $this->denyAccessUnlessGranted(OpenDateVoter::OPENDATE_VIEW, $opendate);
+        
         
         return $this->render('opendate/opendate_index.html.twig', [
             "opendate"=> $opendate
+        ]);
+    }
+    
+    
+    
+    /**
+     * @Route("/opendate/{identifier}/edit", name="opendate_identifier_edit")
+     */
+    public function editOpenDate($identifier,EntityManagerInterface $em, Request $request)
+    {
+        $repository = $em->getRepository(OpenDate::class);
+        
+        $opendate = $repository->findOneBy(array("identifier"=>$identifier));
+        
+        if (!$opendate) {
+            throw $this->createNotFoundException(sprintf('No opendate for "%s"', $identifier));
+        }
+        
+        $this->denyAccessUnlessGranted(OpenDateVoter::OPENDATE_EDIT, $opendate);
+        
+        
+        
+        $form = $this->createForm(OpenDateCreateFormType::class);
+        $form->setData($opendate);
+        
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            
+            /** @var OpenDate $opendate */
+            $opendate=$form->getData();
+            $opendate ->setCreatedBy($this->getUser());
+            
+            
+            $em->persist($opendate);
+            $em->flush();
+            
+            $this->addFlash('success', 'Cool, this open date has been updated!');
+            
+            return $this->redirectToRoute('opendate_identifier',array('identifier'=>$opendate->getIdentifier()));
+            
+        }else{
+            
+            
+        }
+        
+        
+        
+        return $this->render('opendate/opendate_new.html.twig', [
+            'form'=>$form->createView()
+        ]);
+    }
+    
+    /**
+     * @Route("/opendate/{identifier}/invite", name="opendate_identifier_invite")
+     */
+    public function inviteOpenDate($identifier,EntityManagerInterface $em, Request $request)
+    {
+        $repository = $em->getRepository(OpenDate::class);
+        
+        $opendate = $repository->findOneBy(array("identifier"=>$identifier));
+        
+        if (!$opendate) {
+            throw $this->createNotFoundException(sprintf('No opendate for "%s"', $identifier));
+        }
+        
+        $form = $this->createForm(OpenDateInvitationFormType::class);
+        $form->setData($opendate);
+            
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            
+            /** @var OpenDate $opendate */
+            $opendate=$form->getData();
+            $opendate ->setCreatedBy($this->getUser());
+            
+            
+            $em->persist($opendate);
+            $em->flush();
+            
+            $this->addFlash('success', 'Cool, the open date invitation list has been updated!');
+            
+            return $this->redirectToRoute('opendate_identifier',array('identifier'=>$opendate->getIdentifier()));
+            
+        }else{
+           
+        }
+        
+        
+        
+        return $this->render('opendate/opendate_new.html.twig', [
+            'form'=>$form->createView()
         ]);
     }
     

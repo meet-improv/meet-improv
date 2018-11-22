@@ -13,8 +13,8 @@ class OpenDateVoter extends Voter
 {
     
     const OPENDATE_VIEW = "OPENDATE_VIEW";
-    
-    
+    const OPENDATE_EDIT = "OPENDATE_EDIT";
+    const OPENDATE_INVITE = "OPENDATE_INVITE";
     
     private $security;
     
@@ -25,7 +25,7 @@ class OpenDateVoter extends Voter
     
     protected function supports($attribute, $subject)
     {
-        return in_array($attribute, [ self::OPENDATE_VIEW])
+        return in_array($attribute, [ self::OPENDATE_VIEW,self::OPENDATE_EDIT])
             && $subject instanceof OpenDate;
     }
 
@@ -64,6 +64,16 @@ class OpenDateVoter extends Voter
                 
                 
                 break;
+                
+            case self::OPENDATE_EDIT:
+                // An OpenDate is editable by the admins of the owner 
+                
+                return $this->security->isGranted(ContributorVoter::EDIT_CONTRIBUTOR, $opendate->getOwner());
+                
+                
+                break;
+                
+                
                 
         }
 
