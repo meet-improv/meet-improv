@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
+use App\Entity\OpenDate;
 
 /**
  * The Contributor abstract class represents any form of event contributor.
@@ -102,6 +103,16 @@ abstract class Contributor
      * @ORM\ManyToMany(targetEntity="App\Entity\OpenDate", mappedBy="invitedContributors")
      */
     private $invitedToOpenDates;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $bannerPicUrl;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $profilePicUrl;
     
     public function getLocation(): ?string
     {
@@ -250,6 +261,40 @@ abstract class Contributor
     {
         return $this->ownedOpenDates;
     }
+    
+    /**
+     * @return Collection|OpenDate[]
+     */
+    public function getPublicOwnedOpenDates(): Collection
+    {
+        
+        
+        $publicOwnedOpenDates = new ArrayCollection();
+        
+        foreach ($this->ownedOpenDates->getValues() as $ownedOpenDate){
+            /** var OpenDate $ownedOpenDate */
+            if($ownedOpenDate->isPublic()){
+                $publicOwnedOpenDates->add($ownedOpenDate);
+            }
+        }
+        
+        if($this->getType() == self::TYPE_TROUPE){
+            /** var Troupe $this */
+            $teams = $this->getTeams();
+            
+            foreach ($teams as $team){
+                foreach ($team->ownedOpenDates->getValues() as $ownedOpenDate){
+                    /** var OpenDate $ownedOpenDate */
+                    if($ownedOpenDate->isPublic()){
+                        $publicOwnedOpenDates->add($ownedOpenDate);
+                    }
+                }
+            }
+        }
+        
+        
+        return $publicOwnedOpenDates;
+    }
 
     public function addOwnedOpenDate(OpenDate $ownedOpenDate): self
     {
@@ -298,6 +343,30 @@ abstract class Contributor
             $this->invitedToOpenDates->removeElement($invitedToOpenDate);
             $invitedToOpenDate->removeInvitedContributor($this);
         }
+
+        return $this;
+    }
+
+    public function getBannerPicUrl(): ?string
+    {
+        return $this->bannerPicUrl;
+    }
+
+    public function setBannerPicUrl(?string $bannerPicUrl): self
+    {
+        $this->bannerPicUrl = $bannerPicUrl;
+
+        return $this;
+    }
+
+    public function getProfilePicUrl(): ?string
+    {
+        return $this->profilePicUrl;
+    }
+
+    public function setProfilePicUrl(?string $profilePicUrl): self
+    {
+        $this->profilePicUrl = $profilePicUrl;
 
         return $this;
     }

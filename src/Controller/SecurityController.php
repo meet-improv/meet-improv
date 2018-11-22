@@ -10,6 +10,16 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
+     * @Route("/", name="home")
+     */
+    public function home()
+    {
+        return $this->redirectToRoute('contributor_list',array("contributor_type"=> "troupe"));
+    }
+    
+    
+    
+    /**
      * @Route("/login", name="app_login")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
@@ -35,7 +45,7 @@ class SecurityController extends AbstractController
      */
     public function redirectLogout()
     {
-        return $this->redirectToRoute('troupe');
+        return $this->redirectToRoute('home');
     }
     
     /**
@@ -43,6 +53,6 @@ class SecurityController extends AbstractController
      */
     public function redirectLogin()
     {
-        return $this->redirectToRoute('troupe');
+        return $this->redirectToRoute('home');
     }
 }

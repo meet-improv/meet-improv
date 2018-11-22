@@ -1,4 +1,6 @@
 {% extends 'base.html.twig' %}
+{% import "macros/contributor.macros.html.twig" as contributorMacros %}
+
 
 
 
@@ -8,9 +10,35 @@
 
 
 <div class=" ">
-    <h1>User:</h1>
+    <h1>User: 
+{{ user.username }}</h1>
+ <br>
 
-{{ user.username }}
+<h2>Super admin of </h2>
+{% for contributor in user.superAdminOfContributors %}
+
+{{ contributorMacros.contributorInline(contributor) }}<br>
+
+    {% if contributor.teams is defined %}
+        {% for team in contributor.teams %}
+               - - - {{ contributorMacros.contributorInline(team) }}<br>
+        {% endfor %}
+    {% endif %}
+
+{% endfor %}
+
+<h2>Admin of </h2>
+{% for contributor in user.adminOfContributors %}
+
+{{ contributorMacros.contributorInline(contributor) }} <br>
+
+    {% if contributor.teams is defined %}
+        {% for team in contributor.teams %}
+               - - - {{ contributorMacros.contributorInline(team) }}<br>
+        {% endfor %}
+    {% endif %}
+
+{% endfor %}
 
 </div>
 {% endblock %}

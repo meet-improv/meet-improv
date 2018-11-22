@@ -1,3 +1,5 @@
+{% import "macros/contributor.macros.html.twig" as contributorMacros %}
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -21,16 +23,25 @@
     </head>
     <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light nav-pills">
-       <a class="navbar-brand" href="{{ path('troupe') }}"> 
+       <a class="navbar-brand" href="{{ path('contributor_list',{contributor_type: constant('App\\Entity\\Contributor::TYPE_TROUPE')}) }}"> 
              Meet Improv
       </a>
       
-      <a class="nav-item nav-link{{ app.request.get('_route') == 'home' ? ' active' }}" href="{{ path('troupe') }}">Home</a>
-      <a class="nav-item nav-link{{ app.request.get('_route') == 'troupe' ? ' active' }}" href="{{ path('troupe') }}"><i class="fas fa-theater-masks"></i> Troupe list</a>
-      <a class="nav-item nav-link{{ app.request.get('_route') == 'improvisator' ? ' active' }}" href="{{ path('improvisator') }}"><i class="fas fa-user-circle"></i> Improvisator list</a>
+      <a class="nav-item nav-link{{ app.request.get('_route') == 'home'  ? ' active' }}" href="{{ path('contributor_list',{contributor_type: constant('App\\Entity\\Contributor::TYPE_TROUPE')}) }}">Home</a>
+      <a class="nav-item nav-link{{ app.request.get('_route') == 'contributor_list' and app.request.attributes.get('contributor_type') == constant('App\\Entity\\Contributor::TYPE_TROUPE') ? ' active' }}" href="{{ path('contributor_list',{contributor_type: constant('App\\Entity\\Contributor::TYPE_TROUPE')}) }}">{{ contributorMacros.contributorIcon(constant('App\\Entity\\Contributor::TYPE_TROUPE')) }} Troupe list</a>
+      <a class="nav-item nav-link{{ app.request.get('_route') == 'contributor_list' and app.request.attributes.get('contributor_type') == constant('App\\Entity\\Contributor::TYPE_IMPROVISATOR') ? ' active' }}" href="{{ path('contributor_list',{contributor_type: constant('App\\Entity\\Contributor::TYPE_IMPROVISATOR')}) }}">{{ contributorMacros.contributorIcon(constant('App\\Entity\\Contributor::TYPE_IMPROVISATOR')) }} Improvisator list</a>    
+      <a class="nav-item nav-link{{ app.request.get('_route') == 'contributor_list' and app.request.attributes.get('contributor_type') == constant('App\\Entity\\Contributor::TYPE_TEAM') ? ' active' }}" href="{{ path('contributor_list',{contributor_type: constant('App\\Entity\\Contributor::TYPE_TEAM')}) }}">{{ contributorMacros.contributorIcon(constant('App\\Entity\\Contributor::TYPE_TEAM')) }} Team list</a>
       <a class="nav-item nav-link{{ app.request.get('_route') == 'user' ? ' active' }}" href="{{ path('user') }}"><i class="fas fa-user"></i> User list</a>
     </nav>
     
+    {% for message in app.flashes('success') %}
+<div class="alert alert-info container" role="alert">
+ <i class="fas fa-info-circle"></i> {{ message }}
+ <button type="button" class="close" onclick="$(this).parent().slideUp();" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+</button>
+</div>
+        {% endfor %}
     
     
         {% block body %}{% endblock %}

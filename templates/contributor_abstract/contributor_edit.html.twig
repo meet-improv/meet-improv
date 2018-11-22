@@ -1,0 +1,15 @@
+{% extends 'contributor.base.html.twig' %}
+
+
+
+
+{% block contributor_content %}
+
+
+{{ form_start(form) }}
+{{ form_widget(form) }}
+{{ form_end(form) }}
+
+Created at: {{ contributor.createdAt | date('Y-m-d H:i')}}<br>
+Updated at: {{ contributor.updatedAt | date('Y-m-d H:i')}}
+{% endblock %}

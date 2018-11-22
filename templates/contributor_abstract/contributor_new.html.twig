@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% import "macros/contributor.macros.html.twig" as contributorMacros %}
+
+
+{% block body %}
+
+<div class="container">
+<h1>Register a new {{ contributor_type }} {{ contributorMacros.contributorIcon(contributor_type) }}!</h1>
+{{ form_start(form) }}
+{{ form_widget(form) }}
+{{ form_end(form) }}
+</div>
+
+{% endblock %}

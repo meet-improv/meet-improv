@@ -55,6 +55,11 @@ class User implements UserInterface
         $this->superAdminOfContributors = new ArrayCollection();
         $this->adminOfContributors = new ArrayCollection();
     }
+    
+    /*
+    public function __toString(){
+        return $this->username;
+    }  */
 
     public function getId()
     {
@@ -139,6 +144,40 @@ class User implements UserInterface
 
         return $this;
     }
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getSuperAdminOfContributors()
+    {
+        return $this->superAdminOfContributors;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getAdminOfContributors()
+    {
+        return $this->adminOfContributors;
+    }
+
+
+
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection $superAdminOfContributors
+     */
+    public function setSuperAdminOfContributors($superAdminOfContributors)
+    {
+        $this->superAdminOfContributors = $superAdminOfContributors;
+    }
+
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection $adminOfContributors
+     */
+    public function setAdminOfContributors($adminOfContributors)
+    {
+        $this->adminOfContributors = $adminOfContributors;
+    }
+
 
     
 

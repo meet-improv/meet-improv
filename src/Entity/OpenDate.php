@@ -7,24 +7,29 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OpenDateRepository")
  */
 class OpenDate
 {
+    use TimestampableEntity;
+    
     /**
      * @ORM\Id()
-     * @ORM\Column(type="uuid")
+     * @ORM\Column(type="uuid_binary")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $start;
 
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $end;
 
@@ -66,6 +71,18 @@ class OpenDate
      */
     private $createdBy;
 
+    /**
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Gedmo\Slug(handlers={
+ *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+ *          @Gedmo\SlugHandlerOption(name="relationField", value="owner"),
+ *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="identifier"),
+ *          @Gedmo\SlugHandlerOption(name="separator", value="_")
+ *      })
+ * },fields={"start","name"},dateFormat="Y-m-d")
+     */
+    private $identifier;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
@@ -102,6 +119,11 @@ class OpenDate
     }
 
     public function getIsPublic(): ?bool
+    {
+        return $this->isPublic;
+    }
+    
+    public function isPublic(): ?bool
     {
         return $this->isPublic;
     }
@@ -195,6 +217,18 @@ class OpenDate
     public function setCreatedBy(?User $createdBy): self
     {
         $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function getIdentifier(): ?string
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(string $identifier): self
+    {
+        $this->identifier = $identifier;
 
         return $this;
     }

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import "macros/contributor.macros.html.twig" as contributorMacros %}
 
 {% block title %}{{ parent()}} {{ contributor.shortName }}{% endblock %}
 {% block stylesheets %}
@@ -8,45 +9,52 @@
 
 <div class="container main-container">
   <div class="row" >
-    <div class="col-12 contributor-banner"  style="background-image: url('https://aia-le-site.com/wp-content/uploads/2015/01/diapo3.jpg');">
-    		<div class="contributor-profile" style="background-image: url('http://aia-le-site.com/wp-content/uploads/2015/02/MHLebee_logo_header.png');"></div>
+    <div class="col-12 contributor-banner"  style="background-image: url('{{ contributor.bannerPicUrl is not null ? contributor.bannerPicUrl : 'https://www.incimages.com/uploaded_files/image/1940x900/question-marks-1940x900_35723.jpg'}}');">
+    		<div class="contributor-profile" style="background-image: url('{{ contributor.profilePicUrl is not null ? contributor.profilePicUrl : 'http://tlumaczeniasamochodowe.eu/wp-content/uploads/2017/03/9T465KxEc.png' }}');"></div>
     		<div class="contributor-name">{{ contributor.name }}</div>
     </div>
   </div>
   <div class="row">
     <div class="col-3 contributor-details">
+   
         {% block contributor_details %}
-        {% if contributor.type == "troupe" %}
-        <i class="fas fa-theater-masks" data-toggle='tooltip' title='{{ contributor.type }}'></i>
-        {% elseif contributor.type == "improvisator" %}
-        <i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ contributor.type }}'></i>
-        {% elseif contributor.type == "team" %}
-        <i class="fas fa-users"  data-toggle='tooltip' title='{{ contributor.type }}'></i>
-        {% else %}
-        {% endif %}
-         <i>{{ contributor.shortName }}</i><br>
+         {{ contributorMacros.contributorIcon(contributor.type) }}<i>{{ contributor.shortName }}</i><br>
          {{ contributor.location }}
          <br>
          <br>
         {{ contributor.description }}<br>
+        <br>
+        <br>
+        {% if contributor.type == constant('App\\Entity\\Contributor::TYPE_TEAM') %}
+        
+        	{% if contributor.troupe is not null %}
+        	
+        	A team of {{ contributorMacros.contributorInline(contributor.troupe) }}
+        
+            {% else %}
+            
+            This team is not associated to a troupe.
+            
+            {% endif %}
+            
+            {% if is_granted(constant('App\\Security\\Voter\\ContributorVoter::EDIT_CONTRIBUTOR'), contributor) %}
+            	<a href='{{ path('team_identifier_select_troupe',{ identifier: contributor.identifier }) }}'><i class="fas fa-arrow-left"></i></a>
+            {% else %}
+            	Sorry you don't have permissions to manage the association with a team!
+            {% endif %}
+        
+        {% endif %}
         
         <br><br>
-        {% if is_granted('EDIT_CONTRIBUTOR', contributor) %}
-        	{% if contributor.type == "troupe" %}
-            	<a href="{{ path("troupe_identifier_edit", {identifier: contributor.identifier}) }}">
-            {% elseif contributor.type == "improvisator" %}
-            	<a href="{{ path("improvisator_identifier_edit", {identifier: contributor.identifier}) }}">
-            {% elseif contributor.type == "team" %}
-            	<a href="{{ path("team_identifier_edit", {identifier: contributor.identifier}) }}">
-            {% else %}
-            {% endif %}
-            EDIT</a>
+        {% if is_granted(constant('App\\Security\\Voter\\ContributorVoter::EDIT_CONTRIBUTOR'), contributor) %}
+        <a href="{{ path("contributor_identifier_edit", {identifier: contributor.identifier, contributor_type:contributor.type}) }}"><i class="fas fa-edit"></i></a>
         {% else %}
             Sorry you don't have permissions to edit this!
         {% endif %}
         {% endblock %}
     </div>
     <div class="col contributor-content">
+    {% block contributor_content %}
     		
     <ul class="nav nav-tabs" id="myTab" role="tablist">
     
@@ -71,7 +79,7 @@
         <a class="nav-link" id="public-open-dates-tab" data-toggle="tab" href="#public-open-dates" role="tab" aria-controls="public-open-dates" aria-selected="false">Public open dates <span class="badge badge-secondary">0</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="access-rights-tab" data-toggle="tab" href="#access-rights" role="tab" aria-controls="access-rights" aria-selected="false">Access rights <span class="badge badge-secondary">{{ contributor.admins|length + contributor.superAdmins|length}}</span></a>
+        <a class="nav-link" id="access-rights-tab" data-toggle="tab" href="#access-rights" role="tab" aria-controls="access-rights" aria-selected="false">Access rights <span class="badge badge-secondary">{{ contributor.admins|length + contributor.superAdmins|length}}{{ contributor.troupe is defined and contributor.troupe is not null ? " + "}}{{ contributor.troupe is defined and contributor.troupe is not null ? contributor.troupe.admins|length + contributor.troupe.superAdmins|length}}</span></a>
       </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -79,30 +87,70 @@
       <div class="tab-pane fade show active" id="members" role="tabpanel" aria-labelledby="members-tab">
           {% for membership in  contributor.memberships %}
 
-     		<i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ membership.improvisator.type }}'></i> <a href="{{ path("improvisator_identifier", {identifier: membership.improvisator.identifier}) }}">{{ membership.improvisator.name }}</a>, {{ membership.role }}<br>
+     		<i class="fas fa-user-circle"  data-toggle='tooltip' title='{{ membership.improvisator.type }}'></i> <a href="{{ path("contributor_identifier", {identifier: membership.improvisator.identifier, contributor_type: membership.improvisator.type}) }}">{{ membership.improvisator.name }}</a>, {{ membership.role }}<br>
     
         {% endfor %}
+        <a href="{{ path("improvGroup_identifier_manage_members", {identifier: contributor.identifier, contributor_type: contributor.type}) }}"><i class="fa fa-plus-circle"></i></a>
     </div>
     {% else %}
     <div class="tab-pane fade show active" id="groups" role="tabpanel" aria-labelledby="groups-tab">
       {% for membership in  contributor.memberships %}
-{{ membership.role }} of 
-         {% if membership.improvGroup.type == "troupe" %}
-        	<i class="fas fa-theater-masks" data-toggle='tooltip' title='{{ membership.improvGroup.type }}'></i>
-        {% elseif membership.improvGroup.type == "team" %}
-        	<i class="fas fa-users"  data-toggle='tooltip' title='{{ membership.improvGroup.type }}'></i>
-        {% else %}
-        {% endif %}
-        <a href="{{ path("troupe_identifier", {identifier: membership.improvGroup.identifier}) }}">{{ membership.improvGroup.name }}</a><br>
+{{ membership.role }} of  {{ contributorMacros.contributorIcon(membership.improvGroup.type) }} <a href="{{ path("contributor_identifier", {identifier: membership.improvGroup.identifier, contributor_type:membership.improvGroup.type}) }}">{{ membership.improvGroup.name }}</a><br>
     
     {% endfor %}
       </div>
     {% endif %}
      {% if contributor.teams is defined %}
-      <div class="tab-pane fade" id="teams" role="tabpanel" aria-labelledby="teams-tab">TEAMS</div>
+      <div class="tab-pane fade" id="teams" role="tabpanel" aria-labelledby="teams-tab">
+      {% for team in  contributor.teams %}
+      {{ contributorMacros.contributorInline(team) }}<br>
+      
+      {% endfor %}
+      
+      </div>
       {% endif %}
       <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="events-tab">EVENTS</div>
-      <div class="tab-pane fade" id="public-open-dates" role="tabpanel" aria-labelledby="public-open-dates-tab">PUBLIC OPEN DATES</div>
+      <div class="tab-pane fade" id="public-open-dates" role="tabpanel" aria-labelledby="public-open-dates-tab">
+      PUBLIC OPEN DATES
+      
+          <br>
+      
+      {% for opendate in contributor.publicOwnedOpenDates %}
+        <a href="{{ path("opendate_identifier",{"identifier":opendate.identifier}) }}">{{ opendate.name }}</a> (by {{- contributorMacros.contributorInline(opendate.owner) -}})<br>
+      {% endfor %}
+      
+      {% if contributor.teams is defined %}
+      All Open dates  from teams <br>
+      
+      {% for team in  contributor.teams %}
+              {% for opendate in team.publicOwnedOpenDates %}
+                {{ contributorMacros.contributorInline(team) }}: <a href="{{ path("opendate_identifier",{"identifier":opendate.identifier}) }}">{{ opendate.name }}</a><br>
+              {% endfor %}
+      {% endfor %}
+      {% endif %}
+      
+      
+      
+      
+      <br><br><br>
+      
+      ALL OPEN DATES <br>
+      
+      {% for opendate in contributor.ownedOpenDates %}
+        <a href="{{ path("opendate_identifier",{"identifier":opendate.identifier}) }}">{{ opendate.name }}</a><br>
+      {% endfor %}
+      
+      {% if contributor.teams is defined %}
+      All Open dates  from teams <br>
+      
+      {% for team in  contributor.teams %}
+              {% for opendate in team.ownedOpenDates %}
+                {{ contributorMacros.contributorInline(team) }}: <a href="{{ path("opendate_identifier",{"identifier":opendate.identifier}) }}">{{ opendate.name }}</a><br>
+              {% endfor %}
+      {% endfor %}
+      {% endif %}
+      
+      </div>
       
       <div class="tab-pane fade" id="access-rights" role="tabpanel" aria-labelledby="access-rights-tab">
       <b>Super admins</b><br>
@@ -114,11 +162,33 @@
 {{ user.username }}<br>
 {% endfor %}
 
+
+
+
+        {% if is_granted(constant('App\\Security\\Voter\\ContributorVoter::MANAGE_USER_AS_EDITOR'), contributor) %}
+        	<a href="{{ path("contributor_identifier_manage_editors", {identifier: contributor.identifier, contributor_type: contributor.type}) }}"><i class="fas fa-user-edit"></i></a>
+        {% else %}
+            Sorry you don't have permissions to edit this!
+        {% endif %}
+
+<br><br>
+{% if contributor.troupe is defined and contributor.troupe is not null %}
+      <b>Inherited super admins from troupe</b><br>
+{% for user in contributor.troupe.superAdmins %}
+{{ user.username }}<br>
+{% endfor %}
+<b>Inherited admins from troupe</b><br>
+{% for user in contributor.troupe.admins %}
+{{ user.username }}<br>
+{% endfor %}
+
+{% endif %}
+
 	  </div>
     </div>
     		
     		
-      {% block contributor_content %}
+      
 {% endblock %}
 
     </div>
